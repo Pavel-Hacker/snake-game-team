@@ -1,14 +1,14 @@
 :root{
   /* ===== Палитра / тема ===== */
-  --board: rgba(0,0,0,0.16); /* фон игрового поля (прозрачный) */
-  --snake: #4b86ff;          /* тело змейки */
-  --snake-head: #76a4ff;     /* голова змейки (чуть светлее) */
-  --food: #ff4d4d;           /* еда — красный кружок */
+  --board: rgba(0,0,0,0.16); 
+  --snake: #4b86ff;          
+  --snake-head: #76a4ff;     
+  --food: #ff4d4d;          
 
-  --text: #e6e9ff;           /* основной цвет текста */
-  --muted: #cfd5ee;          /* приглушённый текст (подсказки/лейблы) */
+  --text: #e6e9ff;           
+  --muted: #cfd5ee;          
 
-  --radius: 12px;            /* скругления карточек */
+  --radius: 12px;            
 }
 
 html, body { height: 100%; }
@@ -28,10 +28,10 @@ body{
 
 /* ===== Контейнер приложения ===== */
 .app{
-  width: min(96vw, 820px); /* адаптивная ширина: максимум 820px */
+  width: min(96vw, 820px); 
   padding: 14px;
   display: grid;
-  gap: 12px;               /* расстояние между карточками */
+  gap: 12px;               
 }
 
 /* ===== Стеклянные карточки (glassmorphism) ===== */
@@ -39,7 +39,7 @@ body{
   background: rgba(0,0,0,.28);
   border: 1px solid rgba(255,255,255,.14);
   border-radius: var(--radius);
-  backdrop-filter: blur(6px); /* лёгкое размытие фона */
+  backdrop-filter: blur(6px); 
 }
 
 /* ===== Верхняя панель со статистикой ===== */
@@ -67,8 +67,8 @@ body{
 
 #game {
   display: block;
-  width: 95%;   /* делаем canvas резиновым по ширине контейнера */
-  height: auto; /* высота пропорционально ширине */
+  width: 95%;   
+  height: auto; 
   margin: 0 auto;
   background: transparent;
   border-radius: 10px;
@@ -105,5 +105,6 @@ button{
   cursor: pointer;
   backdrop-filter: blur(6px);
 }
-button:hover{ filter: brightness(1.08); } /* лёгкий подсвет при наведении */
-button:active{ transform: translateY(1px); } /* имитация клика */
+button:hover{ filter: brightness(1.08); } 
+button:active{ transform: translateY(1px); } 
+
