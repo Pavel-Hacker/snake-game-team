@@ -1,0 +1,109 @@
+:root{
+  /* ===== Палитра / тема ===== */
+  --board: rgba(0,0,0,0.16); /* фон игрового поля (прозрачный) */
+  --snake: #4b86ff;          /* тело змейки */
+  --snake-head: #76a4ff;     /* голова змейки (чуть светлее) */
+  --food: #ff4d4d;           /* еда — красный кружок */
+
+  --text: #e6e9ff;           /* основной цвет текста */
+  --muted: #cfd5ee;          /* приглушённый текст (подсказки/лейблы) */
+
+  --radius: 12px;            /* скругления карточек */
+}
+
+html, body { height: 100%; }
+
+body{
+  margin: 0;
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.20)),
+    url("jungle.png") center / cover no-repeat fixed;
+}
+
+/* ===== Контейнер приложения ===== */
+.app{
+  width: min(96vw, 820px); /* адаптивная ширина: максимум 820px */
+  padding: 14px;
+  display: grid;
+  gap: 12px;               /* расстояние между карточками */
+}
+
+/* ===== Стеклянные карточки (glassmorphism) ===== */
+.glass{
+  background: rgba(0,0,0,.28);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px); /* лёгкое размытие фона */
+}
+
+/* ===== Верхняя панель со статистикой ===== */
+.topbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
+.topbar h1{
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: .2px;
+}
+.stats{
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.stats strong{ color: var(--text); }
+
+/* ===== Игровая область с canvas ===== */
+.board{ padding: 10px; }
+
+#game {
+  display: block;
+  width: 95%;   /* делаем canvas резиновым по ширине контейнера */
+  height: auto; /* высота пропорционально ширине */
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 10px;
+}
+
+/* Подсказка под полем */
+.hint{
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+
+/* ===== Кнопки управления ===== */
+.controls{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* Базовый стиль кнопок */
+button{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+button:hover{ filter: brightness(1.08); } /* лёгкий подсвет при наведении */
+button:active{ transform: translateY(1px); } /* имитация клика */
