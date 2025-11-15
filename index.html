@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Змейка</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar glass">
+      <h1>Змейка 406</h1>
+      <div class="stats">
+        <span>Счёт: <strong id="score">0</strong></span>
+        <span>Рекорд: <strong id="hiscore">0</strong></span>
+      </div>
+    </header>
+
+    <section class="board glass">
+      <canvas id="game" width="630" height="630" aria-label="Игровое поле"></canvas>
+
+      <div class="hint">Управление: ← ↑ ↓ → или WASD • Рестарт: R</div>
+    </section>
+
+    <section class="controls">
+      <button id="startBtn" type="button">Старт</button>
+      <button id="restartBtn" type="button">Заново</button>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
