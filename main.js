@@ -1,14 +1,12 @@
-// ======================= КОНФИГ =======================
+
 const CFG = Object.freeze({
-  GRID: 20,               // размер сетки: 20x20 клеток
-  SPEED: 10,              // скорость (шагов в секунду)
-  STORAGE_KEY: 'snake_hi_simple', // ключ для рекорда в localStorage
-  OUTLINE_ALPHA: 0.10,    // непрозрачность обводки сегментов
+  GRID: 20,               
+  SPEED: 10,              
+  STORAGE_KEY: 'snake_hi_simple', 
+  OUTLINE_ALPHA: 0.10,    
   WRAP: true              // "телепорт" через края поля (если false — стены смертельны)
 });
 
-// ================== DOM и НАСТРОЙКА КАНВАСА ==================
-// Быстрый селектор
 const $ = (sel) => document.querySelector(sel);
 
 const canvas = $('#game');
@@ -43,18 +41,18 @@ function cellSize() {
 const cssVar = (name) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-// ======================= СОСТОЯНИЕ ИГРЫ =======================
+
 // Всё текущее состояние игры хранится в одном объекте S.
 const S = {
   snake: [],                 // массив сегментов змейки [{x,y}, ...]; 0-й — голова
-  dir: { x: 1, y: 0 },       // текущее направление движения
-  nextDir: { x: 1, y: 0 },   // направление, выбранное игроком (применяется на шаге)
-  food: null,                // координаты еды {x,y}
-  score: 0,                  // текущий счёт
-  running: false,            // идёт ли игра (для паузы/старта)
-  dead: false,               // флаг "змейка погибла"
-  acc: 0,                    // аккумулятор времени для дискретных шагов
-  lastTs: performance.now()  // время предыдущего кадра
+  dir: { x: 1, y: 0 },       
+  nextDir: { x: 1, y: 0 },   
+  food: null,                
+  score: 0,                  
+  running: false,            
+  dead: false,               
+  acc: 0,                    
+  lastTs: performance.now() 
 };
 
 function getHi() {
@@ -66,7 +64,7 @@ function setHi(v) {
 
 hiscoreEl.textContent = getHi();
 
-// ============== ИГРОВАЯ ЛОГИКА (reset / place / step) ==============
+// (reset / place / step)
 
 function resetGame() {
   const mid = Math.floor(CFG.GRID / 2);
@@ -82,7 +80,6 @@ function resetGame() {
   draw();      // сразу отрисовываем стартовое состояние
 }
 
-/** Запуск (или продолжение) игры */
 function start() {
   if (S.dead) resetGame();          // если были мертвы — начнём заново
   S.lastTs = performance.now();
@@ -90,15 +87,12 @@ function start() {
   S.running = true;
 }
 
-/** Полный рестарт (сброс + старт) */
 function restart() {
   resetGame();
   start();
 }
 
-/**
- * Случайно размещает еду так, чтобы она не попадала на тело змейки.
- */
+
 function placeFood() {
   while (true) {
     const p = { x: rnd(CFG.GRID), y: rnd(CFG.GRID) };
@@ -109,18 +103,10 @@ function placeFood() {
   }
 }
 
-/**
- * Один дискретный шаг игры:
- * - применяем выбранное направление
- * - рассчитываем новую позицию головы
- * - проверяем столкновения/границы
- * - проверяем еду (растём/не растём)
- */
+
 function step() {
-  // Фиксируем направление, выбранное на предыдущем кадре
   S.dir = S.nextDir;
 
-  // Новые координаты головы
   let nx = S.snake[0].x + S.dir.x;
   let ny = S.snake[0].y + S.dir.y;
 
@@ -144,19 +130,16 @@ function step() {
 
   S.snake.unshift(head);
 
-  // Проверяем еду
   if (head.x === S.food.x && head.y === S.food.y) {
     S.score++;
     scoreEl.textContent = S.score;
-    placeFood(); // кладём новую еду
-    // Хвост НЕ убираем — так растём на 1 сегмент
+    placeFood();
   } else {
     // Если не съели — удаляем последний сегмент (движение без роста)
     S.snake.pop();
   }
 }
 
-/** Завершение игры: ставим флаги, обновляем рекорд */
 function gameOver() {
   S.running = false;
   S.dead = true;
@@ -165,20 +148,13 @@ function gameOver() {
   hiscoreEl.textContent = getHi();
 }
 
-// ======================== РЕНДЕР ========================
-/**
- * Полная перерисовка кадра:
- * - очищаем холст
- * - рисуем фон-подложку
- * - рисуем еду, тело, голову и глазки
- * - если проиграли — затемняем и показываем подсказку
- */
+// РЕНДЕР
+
 function draw() {
   // 1) Сбрасываем трансформации, очищаем буфер полностью
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 2) Снова настраиваем DPR и рисование в CSS-пикселях
   fitCanvasToDPR();
 
   const W = canvas.clientWidth || canvas.width;
@@ -197,7 +173,6 @@ function draw() {
     cssVar('--food') || '#ff4d4d'
   );
 
-  // ТЕЛО ЗМЕЙКИ (все сегменты, кроме головы)
   for (let i = S.snake.length - 1; i >= 1; i--) {
     const s = S.snake[i];
     roundRect(
@@ -211,7 +186,6 @@ function draw() {
     );
   }
 
-  // ГОЛОВА — рисуем чуть больше и другим цветом
   const h = S.snake[0];
   roundRect(
     h.x * CELL + 1,
@@ -223,10 +197,9 @@ function draw() {
     CFG.OUTLINE_ALPHA
   );
 
-  // ГЛАЗЫ — для "мордочки"
   drawFace(h, S.dir, CELL);
 
-  // Экран смерти (оверлей + текст)
+  // Экран смерти
   if (S.dead) {
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.fillRect(0, 0, W, H);
@@ -244,14 +217,10 @@ function draw() {
   }
 }
 
-/**
- * Рисуем "мордочку" у головы: два глаза, ориентированные по направлению движения.
- * head — координаты головы в клетках, dir — направление, CELL — размер клетки.
- */
 function drawFace(head, dir, CELL) {
-  const cx = head.x * CELL + CELL / 2; // центр головы
+  const cx = head.x * CELL + CELL / 2; 
   const cy = head.y * CELL + CELL / 2;
-  const nx = -dir.y, ny = dir.x;       // нормаль, направленная вбок от движения
+  const nx = -dir.y, ny = dir.x;
 
   // Расстояние между глазами и смещение вперёд
   const spread = CELL * 0.18;
@@ -267,8 +236,6 @@ function drawFace(head, dir, CELL) {
   circle(eye2.x, eye2.y, r, '#000');
 }
 
-// ===== Примитивы рисования на canvas =====
-/** Кружок */
 function circle(x, y, r, fill) {
   ctx.beginPath();
   ctx.arc(Math.round(x), Math.round(y), r, 0, Math.PI * 2);
@@ -276,9 +243,8 @@ function circle(x, y, r, fill) {
   ctx.fill();
 }
 
-/** Скруглённый прямоугольник (с тонкой обводкой, если задана) */
 function roundRect(x, y, w, h, r, fill, outlineAlpha = 0.1) {
-  // Округляем координаты — картинка выходит чётче
+  
   x = Math.round(x); y = Math.round(y);
   w = Math.round(w); h = Math.round(h); r = Math.round(r);
 
@@ -300,15 +266,8 @@ function roundRect(x, y, w, h, r, fill, outlineAlpha = 0.1) {
   }
 }
 
-// ========================= ЦИКЛ =========================
-/**
- * Главный игровой цикл на requestAnimationFrame:
- * - копим прошедшее время в S.acc
- * - выполняем нужное число дискретных "шагов" с периодом 1/SPEED
- * - затем один раз перерисовываем кадр
- */
+//  ЦИКЛ
 function loop(ts) {
-  // Если игра не запущена (пауза/старт не нажат) — просто перерисуем и ждём
   if (!S.running) {
     S.lastTs = ts;
     requestAnimationFrame(loop);
@@ -316,12 +275,11 @@ function loop(ts) {
     return;
   }
 
-  const dt = (ts - S.lastTs) / 1000; // дельта времени в секундах
+  const dt = (ts - S.lastTs) / 1000; 
   S.lastTs = ts;
   S.acc += dt;
 
   const stepTime = 1 / CFG.SPEED;
-  // Может накопиться несколько шагов (при просадках FPS)
   while (S.acc >= stepTime && S.running && !S.dead) {
     step();
     S.acc -= stepTime;
@@ -331,15 +289,6 @@ function loop(ts) {
   requestAnimationFrame(loop);
 }
 
-// ====================== ВВОД/СОБЫТИЯ ======================
-/**
- * Обработка клавиатуры.
- * Поддерживаются:
- * - стрелки
- * - WASD
- * - русская раскладка "ц, ы, ф, в" (аналог WASD)
- * - R/К — рестарт
- */
 window.addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
 
@@ -356,34 +305,25 @@ window.addEventListener('keydown', (e) => {
   if (k === 'd') return turn(1, 0);
 
   // русская раскладка (фывац)
-  if (k === 'ц') return turn(0, -1); // вместо W
-  if (k === 'ы') return turn(0, 1);  // вместо S
-  if (k === 'ф') return turn(-1, 0); // вместо A
-  if (k === 'в') return turn(1, 0);  // вместо D
+  if (k === 'ц') return turn(0, -1); 
+  if (k === 'ы') return turn(0, 1);  
+  if (k === 'ф') return turn(-1, 0); 
+  if (k === 'в') return turn(1, 0); 
 
   // рестарт
   if (k === 'r' || k === 'к') return restart();
 });
 
-/**
- * Поворот змейки.
- * Блокируем разворот на 180°, чтобы нельзя было мгновенно "в себя".
- */
 function turn(x, y) {
   if ((x !== 0 && S.dir.x === -x) || (y !== 0 && S.dir.y === -y)) return;
   S.nextDir = { x, y };
 }
 
-// События на кнопках
 $('#startBtn').addEventListener('click', start);
 $('#restartBtn').addEventListener('click', restart);
 
-// ===================== ИНИЦИАЛИЗАЦИЯ =====================
-// Сбрасываем игру, настраиваем DPR и запускаем цикл кадров.
 resetGame();
 fitCanvasToDPR();
 requestAnimationFrame(loop);
 
-// ====================== УТИЛИТЫ ======================
-/** Случайное целое [0, n) */
 function rnd(n) { return Math.floor(Math.random() * n); }
