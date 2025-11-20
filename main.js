@@ -1,4 +1,4 @@
-
+// характеристики
 const CFG = Object.freeze({
   GRID: 20,               
   SPEED: 10,              
@@ -7,7 +7,7 @@ const CFG = Object.freeze({
   WRAP: true              // "телепорт" через края поля (если false — стены смертельны)
 });
 
-const $ = (sel) => document.querySelector(sel);
+const $ = (sel) => document.querySelector(sel); // функция возвращает первый элемент
 
 const canvas = $('#game');
 const scoreEl = $('#score');
@@ -15,6 +15,7 @@ const hiscoreEl = $('#hiscore');
 
 const ctx = canvas.getContext('2d');
 
+// подгоняем холст под devicePixelRatio
 function fitCanvasToDPR() {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const cssW = canvas.clientWidth || canvas.width;   
@@ -28,7 +29,7 @@ function fitCanvasToDPR() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-
+// при изменении размера окна пересчитать размер
 window.addEventListener('resize', () => { fitCanvasToDPR(); draw(); });
 
 
@@ -42,7 +43,7 @@ const cssVar = (name) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 
-// Всё текущее состояние игры хранится в одном объекте S.
+// Всё текущее состояние игры
 const S = {
   snake: [],                 // массив сегментов змейки [{x,y}, ...]; 0-й — голова
   dir: { x: 1, y: 0 },       
@@ -64,8 +65,7 @@ function setHi(v) {
 
 hiscoreEl.textContent = getHi();
 
-// (reset / place / step)
-
+// сброс игры в начальное состояние
 function resetGame() {
   const mid = Math.floor(CFG.GRID / 2);
   S.snake = [{ x: mid, y: mid }]; // стартовая голова в центре
@@ -92,7 +92,7 @@ function restart() {
   start();
 }
 
-
+// размещаем еду на свободной клетке
 function placeFood() {
   while (true) {
     const p = { x: rnd(CFG.GRID), y: rnd(CFG.GRID) };
@@ -129,7 +129,7 @@ function step() {
   }
 
   S.snake.unshift(head);
-
+ // проверяем столкновение с собой
   if (head.x === S.food.x && head.y === S.food.y) {
     S.score++;
     scoreEl.textContent = S.score;
@@ -151,7 +151,7 @@ function gameOver() {
 // РЕНДЕР
 
 function draw() {
-  // 1) Сбрасываем трансформации, очищаем буфер полностью
+  // 1) Сбрасываем 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -161,11 +161,11 @@ function draw() {
   const H = canvas.clientHeight || canvas.height;
   const CELL = cellSize();
 
-  // Фоновая подложка поля
+  // Фон
   ctx.fillStyle = cssVar('--board') || 'rgba(0,0,0,0.16)';
   ctx.fillRect(0, 0, W, H);
 
-  // ЕДА — кружок
+  // ЕДА
   circle(
     S.food.x * CELL + CELL / 2,
     S.food.y * CELL + CELL / 2,
@@ -326,4 +326,5 @@ resetGame();
 fitCanvasToDPR();
 requestAnimationFrame(loop);
 
+// генерация случайного число
 function rnd(n) { return Math.floor(Math.random() * n); }
